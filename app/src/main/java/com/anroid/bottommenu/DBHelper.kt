@@ -119,8 +119,7 @@ class DBHelper(
                 val rating = cursor.getFloat(cursor.getColumnIndex("rating"))
                 val emotion = cursor.getString(cursor.getColumnIndex("emotion"))
                 val recommend = cursor.getString(cursor.getColumnIndex("recommend"))
-                val review_content =
-                    Review(alias, title, genre, category, review, description, rating, emotion, recommend)
+                val review_content = Review(alias, title, genre, category, review, description, rating, emotion, recommend)
                 reviewList.add(review_content)
             }
         } catch (ex: Exception) {
@@ -130,19 +129,22 @@ class DBHelper(
         return reviewList
     }
 
-    fun REVIEW_Insert(title: String, review: String, category: String, description: String, rating: Float, emotion: String, recommend: String) {
+    fun REVIEW_Insert(title: String, review: String, genre: String, category: String, description: String, rating: Float, emotion: String, recommend: String) {
         var db: SQLiteDatabase = writableDatabase
-        db!!.execSQL("INSERT INTO REVIEW(title, review, category, description, rating, emotion, recommend) VALUES('$title', '$review', '$category', '$description', '$rating', '$emotion', '$recommend');")
+        db!!.execSQL("INSERT INTO REVIEW(title, review, genre, category, description, rating, emotion, recommend) VALUES('$title', '$review', '$genre', '$category', '$description', '$rating', '$emotion', '$recommend');")
 
         CONTENT_Update_ADD(title, category, rating, recommend, emotion)
         db.close()
     }
 
-    fun REVIEW_Update(alias: Int, title: String, review: String, category: String, description: String, rating: Float, emotion: String, recommend: String) {
+    fun REVIEW_Update(alias: Int, title: String, review: String, genre: String, category: String, description: String, rating: Float, emotion: String, recommend: String) {
         var db: SQLiteDatabase = writableDatabase
+        CONTENT_Update_DEL(title, category, rating, recommend, emotion)
+
         db!!.execSQL("UPDATE REVIEW SET title = '$title' WHERE alias = '$alias';")
         db!!.execSQL("UPDATE REVIEW SET review = '$review' WHERE alias = '$alias';")
         db!!.execSQL("UPDATE REVIEW SET category = '$description' WHERE alias = '$alias';")
+        db!!.execSQL("UPDATE REVIEW SET genre = '$genre' WHERE alias = '$alias';")
         db!!.execSQL("UPDATE REVIEW SET description = '$description' WHERE alias = '$alias';")
         db!!.execSQL("UPDATE REVIEW SET rating = '$rating' WHERE alias = '$alias';")
         db!!.execSQL("UPDATE REVIEW SET emotion = '$emotion' WHERE alias = '$alias';")
@@ -249,7 +251,7 @@ class DBHelper(
 
     fun CONTENT_Update_ADD(title: String, category: String, rating: Float, recommend: String, emotion: String){
         var db: SQLiteDatabase = writableDatabase
-        var cursor: Cursor = db!!.rawQuery("SELECT rating FROM CONTENT WHERE title = '$title' AND category = '$category';", null)
+        var cursor: Cursor = db!!.rawQuery("SELECT * FROM CONTENT WHERE title = '$title' AND category = '$category';", null)
 
         var ratingScore = 0.0f
         var reviewNum = 0
@@ -270,30 +272,30 @@ class DBHelper(
 
         when(recommend){
             "YES" -> {
-                recommendScore = recommendScore - 1
+                recommendScore = recommendScore + 1
             }
             else -> false
         }
 
         when(emotion){
             "HAPPY" -> {
-                happyScore -= 1
+                happyScore += 1
             }
             "SAD" -> {
-                sadScore -= 1
+                sadScore += 1
             }
-            "BORING" -> {
-                boredScore -= 1
+            "BORED" -> {
+                boredScore += 1
             }
             else -> false
         }
 
-        reviewNum = reviewNum - 1
-        ratingScore = (ratingScore * (reviewNum + 1) + reviewNum * rating) / reviewNum
+        reviewNum += 1
+        ratingScore = ((ratingScore * reviewNum-1) + rating) / reviewNum
 
         db!!.execSQL("UPDATE CONTENT SET HAPPY = '$happyScore' WHERE title = '$title' AND category = '$category';")
         db!!.execSQL("UPDATE CONTENT SET SAD = '$sadScore' WHERE title = '$title' AND category = '$category';")
-        db!!.execSQL("UPDATE CONTENT SET BORING = '$boredScore' WHERE title = '$title' AND category = '$category';")
+        db!!.execSQL("UPDATE CONTENT SET BORED = '$boredScore' WHERE title = '$title' AND category = '$category';")
         db!!.execSQL("UPDATE CONTENT SET recommend = '$recommendScore' WHERE title = '$title' AND category = '$category';")
         db!!.execSQL("UPDATE CONTENT SET rating = '$ratingScore' WHERE title = '$title' AND category = '$category';")
         db!!.execSQL("UPDATE CONTENT SET reviewNum = '$reviewNum' WHERE title = '$title' AND category = '$category';")
@@ -331,19 +333,19 @@ class DBHelper(
 
         when(emotion){
             "HAPPY" -> {
-                happyScore += 1
+                happyScore -= 1
             }
             "SAD" -> {
-                sadScore += 1
+                sadScore -= 1
             }
-            "BORING" -> {
-                boredScore += 1
+            "BORED" -> {
+                boredScore -= 1
             }
             else -> false
         }
 
-        reviewNum = reviewNum + 1
-        ratingScore = (ratingScore * (reviewNum - 1) + reviewNum * rating) / reviewNum
+        reviewNum = reviewNum - 1
+        ratingScore = ((ratingScore * reviewNum + 1) - rating) / reviewNum
 
         db!!.execSQL("UPDATE CONTENT SET HAPPY = '$happyScore' WHERE title = '$title' AND category = '$category';")
         db!!.execSQL("UPDATE CONTENT SET SAD = '$sadScore' WHERE title = '$title' AND category = '$category';")
