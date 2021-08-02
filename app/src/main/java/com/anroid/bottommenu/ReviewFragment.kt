@@ -11,6 +11,7 @@ class ReviewFragment : Fragment() {
     private var alias: Int = 0
     private var title: String = ""
     private var reviewContent: String = ""
+    private var category: String = "BOOK"
     private var description: String = ""
     private var ratingScore: Float = 0.0f
     private var emotion: String = ""
@@ -139,16 +140,12 @@ class ReviewFragment : Fragment() {
             description = summary.text.toString()
 
             when(alias){
-                0 -> db.REVIEW_Insert(title, reviewContent, description, ratingScore, emotion, recommend)
-                else -> db.REVIEW_Update(alias, title, reviewContent, description, ratingScore, emotion, recommend)
+                0 -> db.REVIEW_Insert(title, reviewContent, category, description, ratingScore, emotion, recommend)
+                else -> db.REVIEW_Update(alias, title, reviewContent, category, description, ratingScore, emotion, recommend)
             }
             (activity as MainActivity).reviewToMypage()
         }
-        btn_rev.setOnClickListener {
-            val category = "MUSIC"
-            //val image
-            //db.REVIEW_Insert(title, image, category, description, ratingScore)
-        }
+
         btn_del.setOnClickListener {
             db.REVIEW_Delete(alias)
             (activity as MainActivity).reviewToMypage()

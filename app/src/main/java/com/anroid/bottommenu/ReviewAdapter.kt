@@ -17,6 +17,8 @@ class ReviewAdapter(val context: Context, val reviewList: List<Review>): BaseAda
     private val mainActivity = MainActivity.getInstance()
     private var alias: Int = 0
     private var title: String = ""
+    private var genre: String = ""
+    private var category: String = ""
     private var reviewContent = ""
     private var description = ""
     private var rating = 0.0f
@@ -48,15 +50,15 @@ class ReviewAdapter(val context: Context, val reviewList: List<Review>): BaseAda
         while (cursor.moveToNext()){
             alias = cursor.getInt(0)
             title = cursor.getString(1)
-            //image = cursor.getBlob(2)
-            //category = cursor.getString(3)
+            genre = cursor.getString(2)
+            category = cursor.getString(3)
             reviewContent = cursor.getString(4)
             description = cursor.getString(5)
             rating = cursor.getFloat(6)
             emotion = cursor.getString(7)
             recommend = cursor.getString(8)
         }
-        val review_content = Review(alias, title, reviewContent, description, rating, emotion, recommend)
+        val review_content = Review(alias, title, genre, category, reviewContent, description, rating, emotion, recommend)
 
         //이벤트
         rowView.setOnClickListener {
