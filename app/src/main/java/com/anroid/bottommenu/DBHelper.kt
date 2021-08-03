@@ -349,7 +349,7 @@ class DBHelper(
 
         db!!.execSQL("UPDATE CONTENT SET HAPPY = '$happyScore' WHERE title = '$title' AND category = '$category';")
         db!!.execSQL("UPDATE CONTENT SET SAD = '$sadScore' WHERE title = '$title' AND category = '$category';")
-        db!!.execSQL("UPDATE CONTENT SET BORING = '$boredScore' WHERE title = '$title' AND category = '$category';")
+        db!!.execSQL("UPDATE CONTENT SET BORED = '$boredScore' WHERE title = '$title' AND category = '$category';")
         db!!.execSQL("UPDATE CONTENT SET recommend = '$recommendScore' WHERE title = '$title' AND category = '$category';")
         db!!.execSQL("UPDATE CONTENT SET rating = '$ratingScore' WHERE title = '$title' AND category = '$category';")
         db!!.execSQL("UPDATE CONTENT SET reviewNum = '$reviewNum' WHERE title = '$title' AND category = '$category';")

@@ -62,6 +62,7 @@ class MainActivity : AppCompatActivity() {
         bundle.putInt("alias", reviewList.alias)
         bundle.putString("title", reviewList.title)
         bundle.putString("genre", reviewList.genre)
+        bundle.putString("category", reviewList.category)
         bundle.putString("reviewContent", reviewList.review)
         bundle.putString("description", reviewList.description)
         bundle.putFloat("rating", reviewList.rating)
